@@ -1,5 +1,10 @@
 package org.example;
 
+/**
+ * @author apotatopudding
+ * @date 2022/12/14 11:41
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,6 +18,9 @@ public class CronCreate {
 
     //作用是锁定前态，方便在未选中时更新内存数据而不展示
     private int state;
+
+    //子窗体公用一个，防止多开窗口
+    JFrame childJF = new JFrame();
 
     //对生成的数据进行存储
     CronInfo cronInfo = new CronInfo();
@@ -31,12 +39,12 @@ public class CronCreate {
         create();
     }
 
+    //生成测试
     /*
     public static void main(String[] args) {
         CronCreate cronCreate = new CronCreate();
         cronCreate.cronCreate();
     }
-    */
 
     private void cronCreate(){
         JFrame JF = new JFrame("cron生成器");
@@ -98,13 +106,14 @@ public class CronCreate {
 
         JF.setVisible(true);
     }
+    */
 
     public void second(){
-        JFrame JF = new JFrame("秒生成");
-        JF.setBounds(650, 100, 300, 280);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("秒生成");
+        childJF.setBounds(650, 100, 300, 280);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -113,18 +122,18 @@ public class CronCreate {
         buttonGroup.add(second);
         second.setBounds(10,10,60,20);
         second.addActionListener(e -> update(1));
-        JF.getContentPane().add(second);
+        childJF.getContentPane().add(second);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从                 -                 秒");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(1, 1, 59, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
@@ -134,7 +143,7 @@ public class CronCreate {
             cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 59, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
@@ -144,7 +153,7 @@ public class CronCreate {
             cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -152,11 +161,11 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从               秒开始，每              秒执行一次");
         fromText.setBounds(32,70,250,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(0, 0, 59, 1);
         JSpinner fromMin = new JSpinner(fromMinRange);
@@ -166,7 +175,7 @@ public class CronCreate {
             cronTemp.setFromMinRange((Integer) fromMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromMin);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 59, 1);
         JSpinner fromMax = new JSpinner(fromMaxRange);
@@ -176,19 +185,19 @@ public class CronCreate {
             cronTemp.setFromMaxRange((Integer) fromMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromMax);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定：");
         buttonGroup.add(appoint);
         appoint.setBounds(10,100,65,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JTextField appointIn = new JTextField();
         appointIn.setBounds(75,100,100,20);
         cronTemp.setAppoint("*");
-        JF.getContentPane().add(appointIn);
+        childJF.getContentPane().add(appointIn);
 
         JButton sure = new JButton("√");
         sure.setBounds(200,100,45,20);
@@ -219,7 +228,7 @@ public class CronCreate {
                 }
             }
         });
-        JF.getContentPane().add(sure);
+        childJF.getContentPane().add(sure);
 
         JLabel appointRemind = new JLabel();
         String text = "<html>请在右侧输入框指定秒(0-59之间)<br/>" +
@@ -228,7 +237,7 @@ public class CronCreate {
         appointRemind.setText(text);
         appointRemind.setForeground(Color.red);
         appointRemind.setBounds(30,125,220,45);
-        JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(appointRemind);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -241,36 +250,36 @@ public class CronCreate {
                 cronTemp = new CronTemp();
                 create();
                 simulationOut.setText(null);
-                JF.setVisible(false);
+                childJF.setVisible(false);
             }
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 180, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,210,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,210,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
     }
 
     public void minute(){
-        JFrame JF = new JFrame("分钟生成");
-        JF.setBounds(650, 100, 305, 280);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("分钟生成");
+        childJF.setBounds(650, 100, 305, 280);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -279,18 +288,18 @@ public class CronCreate {
         buttonGroup.add(minute);
         minute.setBounds(10,10,70,20);
         minute.addActionListener(e -> update(1));
-        JF.getContentPane().add(minute);
+        childJF.getContentPane().add(minute);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从                 -                 分钟");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(1, 1, 59, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
@@ -300,7 +309,7 @@ public class CronCreate {
             cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 59, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
@@ -310,7 +319,7 @@ public class CronCreate {
             cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -318,11 +327,11 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从               分钟开始，每               分钟执行一次");
         fromText.setBounds(32,70,265,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(0, 0, 59, 1);
         JSpinner fromMin = new JSpinner(fromMinRange);
@@ -332,7 +341,7 @@ public class CronCreate {
             cronTemp.setFromMinRange((Integer) fromMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromMin);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 59, 1);
         JSpinner fromMax = new JSpinner(fromMaxRange);
@@ -342,19 +351,19 @@ public class CronCreate {
             cronTemp.setFromMaxRange((Integer) fromMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromMax);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定：");
         buttonGroup.add(appoint);
         appoint.setBounds(10,100,65,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JTextField appointIn = new JTextField();
         appointIn.setBounds(75,100,100,20);
         cronTemp.setAppoint("*");
-        JF.getContentPane().add(appointIn);
+        childJF.getContentPane().add(appointIn);
 
         JButton sure = new JButton("√");
         sure.setBounds(200,100,45,20);
@@ -385,7 +394,7 @@ public class CronCreate {
                 }
             }
         });
-        JF.getContentPane().add(sure);
+        childJF.getContentPane().add(sure);
 
         JLabel appointRemind = new JLabel();
         String text = "<html>请在右侧输入框指定分钟(0-59之间)<br/>" +
@@ -394,7 +403,7 @@ public class CronCreate {
         appointRemind.setText(text);
         appointRemind.setForeground(Color.red);
         appointRemind.setBounds(30,125,220,45);
-        JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(appointRemind);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -407,36 +416,36 @@ public class CronCreate {
                 cronTemp = new CronTemp();
                 create();
                 simulationOut.setText(null);
-                JF.setVisible(false);
+                childJF.setVisible(false);
             }
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 180, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,210,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,210,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
     }
 
     public void hour(){
-        JFrame JF = new JFrame("小时生成");
-        JF.setBounds(650, 100, 305, 280);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("小时生成");
+        childJF.setBounds(650, 100, 305, 280);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -445,18 +454,18 @@ public class CronCreate {
         buttonGroup.add(hour);
         hour.setBounds(10,10,70,20);
         hour.addActionListener(e -> update(1));
-        JF.getContentPane().add(hour);
+        childJF.getContentPane().add(hour);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从                 -                 时");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(0, 0, 23, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
@@ -466,7 +475,7 @@ public class CronCreate {
             cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 23, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
@@ -476,7 +485,7 @@ public class CronCreate {
             cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -484,11 +493,11 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从                时开始，每               小时执行一次");
         fromText.setBounds(32,70,265,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(0, 0, 23, 1);
         JSpinner fromMin = new JSpinner(fromMinRange);
@@ -498,7 +507,7 @@ public class CronCreate {
             cronTemp.setFromMinRange((Integer) fromMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromMin);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 23, 1);
         JSpinner fromMax = new JSpinner(fromMaxRange);
@@ -508,19 +517,19 @@ public class CronCreate {
             cronTemp.setFromMaxRange((Integer) fromMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromMax);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定：");
         buttonGroup.add(appoint);
         appoint.setBounds(10,100,65,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JTextField appointIn = new JTextField();
         appointIn.setBounds(75,100,100,20);
         cronTemp.setAppoint("*");
-        JF.getContentPane().add(appointIn);
+        childJF.getContentPane().add(appointIn);
 
         JButton sure = new JButton("√");
         sure.setBounds(200,100,45,20);
@@ -551,7 +560,7 @@ public class CronCreate {
                 }
             }
         });
-        JF.getContentPane().add(sure);
+        childJF.getContentPane().add(sure);
 
         JLabel appointRemind = new JLabel();
         String text = "<html>请在右侧输入框指定小时(0-23之间)<br/>" +
@@ -560,7 +569,7 @@ public class CronCreate {
         appointRemind.setText(text);
         appointRemind.setForeground(Color.red);
         appointRemind.setBounds(30,125,220,45);
-        JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(appointRemind);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -573,36 +582,36 @@ public class CronCreate {
                 cronTemp = new CronTemp();
                 create();
                 simulationOut.setText(null);
-                JF.setVisible(false);
+                childJF.setVisible(false);
             }
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 180, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,210,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,210,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
     }
 
     public void day(){
-        JFrame JF = new JFrame("日生成");
-        JF.setBounds(650, 100, 305, 310);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("日生成");
+        childJF.setBounds(650, 100, 305, 310);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -611,14 +620,14 @@ public class CronCreate {
         buttonGroup.add(hour);
         hour.setBounds(10,10,60,20);
         hour.addActionListener(e -> update(1));
-        JF.getContentPane().add(hour);
+        childJF.getContentPane().add(hour);
 
         //置入不指定
         JRadioButton notAppoint = new JRadioButton("不指定");
         buttonGroup.add(notAppoint);
         notAppoint.setBounds(70,10,70,20);
         notAppoint.addActionListener(e -> update(5));
-        JF.getContentPane().add(notAppoint);
+        childJF.getContentPane().add(notAppoint);
 
         //置入最后一天
         JRadioButton lastDay = new JRadioButton("当月最后一天");
@@ -628,18 +637,18 @@ public class CronCreate {
             cronTemp.setLatestDay(0);
             update(6);
         });
-        JF.getContentPane().add(lastDay);
+        childJF.getContentPane().add(lastDay);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从                 -                 日");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(1, 1, 31, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
@@ -649,7 +658,7 @@ public class CronCreate {
             cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 31, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
@@ -659,7 +668,7 @@ public class CronCreate {
             cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -667,11 +676,11 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从                日开始，每               天执行一次");
         fromText.setBounds(32,70,265,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(1, 1, 31, 1);
         JSpinner fromMin = new JSpinner(fromMinRange);
@@ -681,7 +690,7 @@ public class CronCreate {
             cronTemp.setFromMinRange((Integer) fromMin.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromMin);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 31, 1);
         JSpinner fromMax = new JSpinner(fromMaxRange);
@@ -691,7 +700,7 @@ public class CronCreate {
             cronTemp.setFromMaxRange((Integer) fromMax.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromMax);
 
         //按最近工作日填写
         JRadioButton workDay = new JRadioButton();
@@ -699,11 +708,11 @@ public class CronCreate {
         workDay.addActionListener(e -> update(7));
         workDay.setBounds(10,100,20,20);
 
-        JF.getContentPane().add(workDay);
+        childJF.getContentPane().add(workDay);
 
         JLabel workDayText = new JLabel("每月                号最近的那个工作日");
         workDayText.setBounds(32,100,265,20);
-        JF.getContentPane().add(workDayText);
+        childJF.getContentPane().add(workDayText);
 
         SpinnerModel workDayInRange = new SpinnerNumberModel(1, 1, 31, 1);
         JSpinner workDayIn = new JSpinner(workDayInRange);
@@ -713,19 +722,19 @@ public class CronCreate {
             cronTemp.setLatestWorkDay((Integer) workDayIn.getValue());
             update(0);
         });
-        JF.getContentPane().add(workDayIn);
+        childJF.getContentPane().add(workDayIn);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定：");
         buttonGroup.add(appoint);
         appoint.setBounds(10,130,65,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JTextField appointIn = new JTextField();
         appointIn.setBounds(75,130,100,20);
         cronTemp.setAppoint("?");
-        JF.getContentPane().add(appointIn);
+        childJF.getContentPane().add(appointIn);
 
         JButton sure = new JButton("√");
         sure.setBounds(200,130,45,20);
@@ -757,7 +766,7 @@ public class CronCreate {
                 }
             }
         });
-        JF.getContentPane().add(sure);
+        childJF.getContentPane().add(sure);
 
         JLabel appointRemind = new JLabel();
         String text = "<html>请在右侧输入框指定日期(1-31之间)<br/>" +
@@ -766,7 +775,7 @@ public class CronCreate {
         appointRemind.setText(text);
         appointRemind.setForeground(Color.red);
         appointRemind.setBounds(30,155,220,45);
-        JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(appointRemind);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -780,35 +789,35 @@ public class CronCreate {
             cronTemp = new CronTemp();
             create();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 210, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,240,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,240,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
     }
 
     public void mouth(){
-        JFrame JF = new JFrame("月生成");
-        JF.setBounds(650, 100, 305, 280);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("月生成");
+        childJF.setBounds(650, 100, 305, 280);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -817,18 +826,18 @@ public class CronCreate {
         buttonGroup.add(month);
         month.setBounds(10,10,70,20);
         month.addActionListener(e -> update(1));
-        JF.getContentPane().add(month);
+        childJF.getContentPane().add(month);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从                 -                 月");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(1, 1, 12, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
@@ -838,7 +847,7 @@ public class CronCreate {
             cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 12, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
@@ -848,7 +857,7 @@ public class CronCreate {
             cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -856,11 +865,11 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从                月开始，每               个月执行一次");
         fromText.setBounds(32,70,265,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(1, 1, 12, 1);
         JSpinner fromMin = new JSpinner(fromMinRange);
@@ -870,7 +879,7 @@ public class CronCreate {
             cronTemp.setFromMinRange((Integer) fromMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromMin);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 12, 1);
         JSpinner fromMax = new JSpinner(fromMaxRange);
@@ -880,19 +889,19 @@ public class CronCreate {
             cronTemp.setFromMaxRange((Integer) fromMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromMax);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定：");
         buttonGroup.add(appoint);
         appoint.setBounds(10,100,65,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JTextField appointIn = new JTextField();
         appointIn.setBounds(75,100,100,20);
         cronTemp.setAppoint("*");
-        JF.getContentPane().add(appointIn);
+        childJF.getContentPane().add(appointIn);
 
         JButton sure = new JButton("√");
         sure.setBounds(200,100,45,20);
@@ -923,7 +932,7 @@ public class CronCreate {
                 }
             }
         });
-        JF.getContentPane().add(sure);
+        childJF.getContentPane().add(sure);
 
         JLabel appointRemind = new JLabel();
         String text = "<html>请在右侧输入框指定月份(1-12之间)<br/>" +
@@ -932,7 +941,7 @@ public class CronCreate {
         appointRemind.setText(text);
         appointRemind.setForeground(Color.red);
         appointRemind.setBounds(30,125,220,45);
-        JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(appointRemind);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -945,130 +954,114 @@ public class CronCreate {
                 cronTemp = new CronTemp();
                 create();
                 simulationOut.setText(null);
-                JF.setVisible(false);
+                childJF.setVisible(false);
             }
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 180, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,210,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,210,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
     }
 
     public void week(){
-        JFrame JF = new JFrame("周生成");
-        JF.setBounds(650, 100, 600, 280);
-        JF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JF.setResizable(false);
-        JF.getContentPane().setLayout(null);
+        childJF.setTitle("周生成");
+        childJF.setBounds(650, 100, 600, 280);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
         JLabel remind = new JLabel();
         String text = "<html>提示：周设置中，建议只使用《不指定》，《每周》这两个选项<br/>" +
-                "cron中的周设置较为反人类，如需单独设置，以下内容可能会给你带来一些理解上的帮助<br/>" +
-                "（如果被绕迷糊了，建议只看填写不看模拟）<br/>" +
-                "1.周域从周日开始计算，显示和实际有一天差距，如显示5，实际周四，显示1，实际周日<br/>" +
-                "2.周域周期单位为一周域，当计数进入下周域后将刷新，故统计时只以一周域为单位来考虑<br/>" +
-                "3.A#B代表的不是第A周的周B，实际代表意义是周B，第A周<br/>" +
-                "4.单独的 L意义为每周的最后一天即周六，如 L前面有数字X，则意义为当月最后一个周X<br/>" +
-                "5.上月未结束的周域会被本月计入第一个周域<br/><html/>";
+                "网页的cron周设置与此有区别，如需单独设置，以下内容可能会给你带来一些理解上的帮助<br/>" +
+                "<br/>" +
+                "1.周的周期单位为一周域，当计数进入下周域后将刷新，故统计时只以一周域为单位来考虑<br/>" +
+                "2.A#B代表的不是第A周的周B，实际代表意义是周B，第A周<br/>" +
+                "3.单独的 L意义为每周的最后一天即周六，如 L前面有数字X时，则意义为当月最后一个周X<br/>" +
+                "<html/>";
         remind.setText(text);
         remind.setForeground(Color.red);
         remind.setFont(new Font("黑体",Font.BOLD,14));
         remind.setBounds(280,0,300,240);
-        JF.getContentPane().add(remind);
+        childJF.getContentPane().add(remind);
 
         //置入通配符
         JRadioButton hour = new JRadioButton("每周");
         buttonGroup.add(hour);
         hour.setBounds(10,10,50,20);
         hour.addActionListener(e -> update(1));
-        JF.getContentPane().add(hour);
+        childJF.getContentPane().add(hour);
 
         //置入不指定
         JRadioButton notAppoint = new JRadioButton("不指定");
         buttonGroup.add(notAppoint);
         notAppoint.setBounds(60,10,65,20);
         notAppoint.addActionListener(e -> update(5));
-        JF.getContentPane().add(notAppoint);
+        childJF.getContentPane().add(notAppoint);
 
         //置入最后一个周X
         JRadioButton lastDay = new JRadioButton("当月最后一个周");
         buttonGroup.add(lastDay);
         lastDay.setBounds(125,10,112,20);
         lastDay.addActionListener(e -> update(6));
-        JF.getContentPane().add(lastDay);
+        childJF.getContentPane().add(lastDay);
 
         SpinnerModel lastDayRange = new SpinnerNumberModel(0, 0, 7, 1);
         JSpinner lastDayOfMonth = new JSpinner(lastDayRange);
         cronTemp.setLatestDay(0);
         lastDayOfMonth.setBounds(238,10,30,20);
         lastDayOfMonth.addChangeListener(e -> {
-            if(lastDayOfMonth.getValue().equals(7)){
-                cronTemp.setLatestDay(1);
-            }else if(lastDayOfMonth.getValue().equals(0)){
-                cronTemp.setLatestDay(0);
-            }else{
-                cronTemp.setLatestDay((Integer) lastDayOfMonth.getValue()+1);
-            }
+            cronTemp.setLatestDay((Integer) lastDayOfMonth.getValue());
             update(0);
         });
-        JF.getContentPane().add(lastDayOfMonth);
+        childJF.getContentPane().add(lastDayOfMonth);
 
         //按周期填写
         JRadioButton cycle = new JRadioButton("周期：");
         buttonGroup.add(cycle);
         cycle.setBounds(10,40,62,20);
         cycle.addActionListener(e -> update(2));
-        JF.getContentPane().add(cycle);
+        childJF.getContentPane().add(cycle);
 
         JLabel cycleText = new JLabel("从周                 -周                 ");
         cycleText.setBounds(72,40,150,20);
-        JF.getContentPane().add(cycleText);
+        childJF.getContentPane().add(cycleText);
 
         SpinnerModel cycleMinRange = new SpinnerNumberModel(1, 1, 7, 1);
         JSpinner cycleMin = new JSpinner(cycleMinRange);
-        cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue()+1);
+        cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
         cycleMin.setBounds(100,40,40,20);
         cycleMin.addChangeListener(e -> {
-            if(cycleMin.getValue().equals(7)){
-                cronTemp.setCycleMinRange(1);
-            }else{
-                cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue()+1);
-            }
+            cronTemp.setCycleMinRange((Integer) cycleMinRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMin);
+        childJF.getContentPane().add(cycleMin);
 
         SpinnerModel cycleMaxRange = new SpinnerNumberModel(2, 2, 7, 1);
         JSpinner cycleMax = new JSpinner(cycleMaxRange);
-        cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue()+1);
+        cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
         cycleMax.setBounds(165,40,40,20);
         cycleMax.addChangeListener(e -> {
-            if(cycleMax.getValue().equals(7)){
-                cronTemp.setCycleMaxRange(1);
-            }else{
-                cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
-            }
-
+            cronTemp.setCycleMaxRange((Integer) cycleMaxRange.getValue());
             update(0);
         });
-        JF.getContentPane().add(cycleMax);
+        childJF.getContentPane().add(cycleMax);
 
         //按递增填写
         JRadioButton from = new JRadioButton();
@@ -1076,35 +1069,31 @@ public class CronCreate {
         from.addActionListener(e -> update(3));
         from.setBounds(10,70,20,20);
 
-        JF.getContentPane().add(from);
+        childJF.getContentPane().add(from);
 
         JLabel fromText = new JLabel("从周                开始，每               天执行一次");
         fromText.setBounds(32,70,265,20);
-        JF.getContentPane().add(fromText);
+        childJF.getContentPane().add(fromText);
 
         SpinnerModel fromMinRange = new SpinnerNumberModel(1, 1, 7, 1);
-        JSpinner fromMin = new JSpinner(fromMinRange);
-        cronTemp.setFromMinRange((Integer) fromMin.getValue()+1);
-        fromMin.setBounds(60,70,40,20);
-        fromMin.addChangeListener(e -> {
-            if(fromMin.getValue().equals(7)){
-                cronTemp.setFromMinRange(1);
-            }else{
-                cronTemp.setFromMinRange((Integer) fromMin.getValue()+1);
-            }
+        JSpinner fromWeek = new JSpinner(fromMinRange);
+        cronTemp.setFromMinRange((Integer) fromWeek.getValue());
+        fromWeek.setBounds(60,70,40,20);
+        fromWeek.addChangeListener(e -> {
+            cronTemp.setFromMinRange((Integer) fromWeek.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMin);
+        childJF.getContentPane().add(fromWeek);
 
         SpinnerModel fromMaxRange = new SpinnerNumberModel(1, 1, 7, 1);
-        JSpinner fromMax = new JSpinner(fromMaxRange);
-        cronTemp.setFromMaxRange((Integer) fromMax.getValue());
-        fromMax.setBounds(157,70,40,20);
-        fromMax.addChangeListener(e -> {
-            cronTemp.setFromMaxRange((Integer) fromMax.getValue());
+        JSpinner fromInterval = new JSpinner(fromMaxRange);
+        cronTemp.setFromMaxRange((Integer) fromInterval.getValue());
+        fromInterval.setBounds(157,70,40,20);
+        fromInterval.addChangeListener(e -> {
+            cronTemp.setFromMaxRange((Integer) fromInterval.getValue());
             update(0);
         });
-        JF.getContentPane().add(fromMax);
+        childJF.getContentPane().add(fromInterval);
 
         //填写格式：A#B:周B，第A周
         JRadioButton special = new JRadioButton();
@@ -1112,136 +1101,129 @@ public class CronCreate {
         special.addActionListener(e -> update(8));
         special.setBounds(10,100,20,20);
 
-        JF.getContentPane().add(special);
+        childJF.getContentPane().add(special);
 
         JLabel specialText = new JLabel("每月第                周的周");
         specialText.setBounds(32,100,265,20);
-        JF.getContentPane().add(specialText);
+        childJF.getContentPane().add(specialText);
 
         SpinnerModel RangeOfSpecialInputWeek = new SpinnerNumberModel(1, 1, 5, 1);
         JSpinner specialInWeek = new JSpinner(RangeOfSpecialInputWeek);
-        cronTemp.setSpecialInWeek((Integer) specialInWeek.getValue());
+        cronTemp.setOrderWeek((Integer) specialInWeek.getValue());
         specialInWeek.setBounds(72,100,40,20);
         specialInWeek.addChangeListener(e -> {
-            cronTemp.setSpecialInWeek((Integer) specialInWeek.getValue());
+            cronTemp.setOrderWeek((Integer) specialInWeek.getValue());
             update(0);
         });
-        JF.getContentPane().add(specialInWeek);
+        childJF.getContentPane().add(specialInWeek);
 
         SpinnerModel RangeOfSpecialInputDay = new SpinnerNumberModel(1, 1, 7, 1);
         JSpinner specialInDay = new JSpinner(RangeOfSpecialInputDay);
-        cronTemp.setSpecialInDay((Integer) specialInDay.getValue()+1);
+        cronTemp.setOrderDay((Integer) specialInDay.getValue());
         specialInDay.setBounds(158,100,40,20);
         specialInDay.addChangeListener(e -> {
-            if(specialInDay.getValue().equals(7)){
-                cronTemp.setSpecialInDay(1);
-            }else{
-                cronTemp.setSpecialInDay((Integer) specialInDay.getValue()+1);
-            }
+            cronTemp.setOrderDay((Integer) specialInDay.getValue());
             update(0);
         });
-        JF.getContentPane().add(specialInDay);
+        childJF.getContentPane().add(specialInDay);
 
         //按指定时间填写
         JRadioButton appoint = new JRadioButton("指定:");
         buttonGroup.add(appoint);
         appoint.setBounds(10,130,55,20);
         appoint.addActionListener(e -> update(4));
-        JF.getContentPane().add(appoint);
+        childJF.getContentPane().add(appoint);
 
         JCheckBox monday = new JCheckBox("一");
         monday.setBounds(65,130,40,20);
         monday.addActionListener(e -> {
             if (monday.isSelected()){
-                cronTemp.appointList.add(2);
+                cronTemp.weekAppointList.add(1);
             }else {
-                cronTemp.appointList.remove(valueOf(2));
+                cronTemp.weekAppointList.remove(valueOf(1));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(monday);
+        childJF.getContentPane().add(monday);
 
         JCheckBox tuesday = new JCheckBox("二");
         tuesday.setBounds(105,130,40,20);
         tuesday.addActionListener(e -> {
             if (tuesday.isSelected()){
-                cronTemp.appointList.add(3);
+                cronTemp.weekAppointList.add(2);
             }else {
-                cronTemp.appointList.remove(valueOf(3));
+                cronTemp.weekAppointList.remove(valueOf(2));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(tuesday);
+        childJF.getContentPane().add(tuesday);
 
         JCheckBox wednesday = new JCheckBox("三");
         wednesday.setBounds(145,130,40,20);
         wednesday.addActionListener(e -> {
             if (wednesday.isSelected()){
-                cronTemp.appointList.add(4);
+                cronTemp.weekAppointList.add(3);
             }else {
-                cronTemp.appointList.remove(valueOf(4));
+                cronTemp.weekAppointList.remove(valueOf(3));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(wednesday);
+        childJF.getContentPane().add(wednesday);
 
         JCheckBox thursday = new JCheckBox("四");
         thursday.setBounds(185,130,40,20);
         thursday.addActionListener(e -> {
             if (thursday.isSelected()){
-                cronTemp.appointList.add(5);
+                cronTemp.weekAppointList.add(4);
             }else {
-                cronTemp.appointList.remove(valueOf(5));
+                cronTemp.weekAppointList.remove(valueOf(4));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(thursday);
+        childJF.getContentPane().add(thursday);
 
         JCheckBox friday = new JCheckBox("五");
         friday.setBounds(65,150,40,20);
         friday.addActionListener(e -> {
             if (friday.isSelected()){
-                cronTemp.appointList.add(6);
+                cronTemp.weekAppointList.add(5);
             }else {
-                cronTemp.appointList.remove(valueOf(6));
+                cronTemp.weekAppointList.remove(valueOf(5));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(friday);
+        childJF.getContentPane().add(friday);
 
         JCheckBox saturday = new JCheckBox("六");
         saturday.setBounds(105,150,40,20);
         saturday.addActionListener(e -> {
             if (saturday.isSelected()){
-                cronTemp.appointList.add(7);
+                cronTemp.weekAppointList.add(6);
             }else {
-                cronTemp.appointList.remove(valueOf(7));
+                cronTemp.weekAppointList.remove(valueOf(6));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(saturday);
+        childJF.getContentPane().add(saturday);
 
         JCheckBox sunday = new JCheckBox("七");
         sunday.setBounds(145,150,40,20);
         sunday.addActionListener(e -> {
             if (sunday.isSelected()){
-                cronTemp.appointList.add(1);
+                cronTemp.weekAppointList.add(7);
             }else {
-                cronTemp.appointList.remove(valueOf(1));
+                cronTemp.weekAppointList.remove(valueOf(7));
             }
             appoint();
             update(0);
         });
-        JF.getContentPane().add(sunday);
-
-        //appointRemind.setBounds(30,155,220,45);
-        //JF.getContentPane().add(appointRemind);
+        childJF.getContentPane().add(sunday);
 
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
@@ -1255,35 +1237,117 @@ public class CronCreate {
             cronTemp = new CronTemp();
             create();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_pass);
+        childJF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
         btn_Button_back.setBounds(150, 180, 70, 23);
         btn_Button_back.addActionListener(e1 -> {
             cronTemp = new CronTemp();
             simulationOut.setText(null);
-            JF.setVisible(false);
+            childJF.setVisible(false);
         });
-        JF.getContentPane().add(btn_Button_back);
+        childJF.getContentPane().add(btn_Button_back);
 
         JLabel simulation = new JLabel("模拟值为：");
         simulation.setBounds(10,210,70,20);
-        JF.getContentPane().add(simulation);
+        childJF.getContentPane().add(simulation);
 
         simulationOut.setBounds(80,210,100,20);
-        JF.getContentPane().add(simulationOut);
+        childJF.getContentPane().add(simulationOut);
 
-        JF.setVisible(true);
+        childJF.setVisible(true);
+    }
+
+    public void special(){
+        childJF.setTitle("特殊生成");
+        childJF.setBounds(650, 100, 600, 200);
+        childJF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        childJF.setResizable(false);
+        childJF.getContentPane().setLayout(null);
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+
+        JLabel remind = new JLabel();
+        String text = "<html>此处属于spring专属特殊cron码<br/>" +
+                "注意，此处的码皆具有特殊含义，会直接替换掉已生成的cron码<br/>" +
+                "如需还原回通用cron码，点击其他任意选项进行一次更改即可恢复<br/><html/>";
+        remind.setText(text);
+        remind.setForeground(Color.red);
+        remind.setFont(new Font("黑体",Font.BOLD,15));
+        remind.setBounds(280,20,300,100);
+        childJF.getContentPane().add(remind);
+
+        //置入通配符
+        JButton yearly = new JButton("每年执行一次");
+        buttonGroup.add(yearly);
+        yearly.setBounds(10,10,120,20);
+        yearly.addActionListener(e -> simulationOut.setText("@yearly"));
+        childJF.getContentPane().add(yearly);
+
+        JButton monthly = new JButton("每月执行一次");
+        buttonGroup.add(monthly);
+        monthly.setBounds(150,10,120,20);
+        monthly.addActionListener(e -> simulationOut.setText("@monthly"));
+        childJF.getContentPane().add(monthly);
+
+        JButton weekly = new JButton("每周执行一次");
+        buttonGroup.add(weekly);
+        weekly.setBounds(10,40,120,20);
+        weekly.addActionListener(e -> simulationOut.setText("@weekly"));
+        childJF.getContentPane().add(weekly);
+
+        JButton daily = new JButton("每天执行一次");
+        buttonGroup.add(daily);
+        daily.setBounds(150,40,120,20);
+        daily.addActionListener(e -> simulationOut.setText("@daily"));
+        childJF.getContentPane().add(daily);
+
+        JButton hourly = new JButton("每小时执行一次");
+        buttonGroup.add(hourly);
+        hourly.setBounds(70,70,130,20);
+        hourly.addActionListener(e -> simulationOut.setText("@hourly"));
+        childJF.getContentPane().add(hourly);
+
+        //确认返回按钮
+        JButton btn_Button_pass = new JButton("确认");
+        btn_Button_pass.setBounds(50, 100, 70, 23);
+        btn_Button_pass.addActionListener(e1 -> {
+            if (!simulationOut.getText().isEmpty()){
+                specialCreate(simulationOut.getText());
+            }
+            cronTemp = new CronTemp();
+            simulationOut.setText(null);
+            childJF.setVisible(false);
+        });
+        childJF.getContentPane().add(btn_Button_pass);
+
+        JButton btn_Button_back = new JButton("返回");
+        btn_Button_back.setBounds(150, 100, 70, 23);
+        btn_Button_back.addActionListener(e1 -> {
+            cronTemp = new CronTemp();
+            simulationOut.setText(null);
+            childJF.setVisible(false);
+        });
+        childJF.getContentPane().add(btn_Button_back);
+
+        JLabel simulation = new JLabel("模拟值为：");
+        simulation.setBounds(10,130,70,20);
+        childJF.getContentPane().add(simulation);
+
+        simulationOut.setBounds(80,130,100,20);
+        childJF.getContentPane().add(simulationOut);
+
+        childJF.setVisible(true);
     }
 
     private void appoint(){
         StringBuilder text = new StringBuilder();
-        if (cronTemp.appointList.isEmpty()){
+        if (cronTemp.weekAppointList.isEmpty()){
             text = new StringBuilder("?");
         }else {
-            for(Integer i : cronTemp.appointList){
+            for(Integer i : cronTemp.weekAppointList){
                 text.append(i);
                 text.append(",");
             }
@@ -1312,7 +1376,7 @@ public class CronCreate {
                 }
             }
             case 7 -> simulationOut.setText(cronTemp.getLatestWorkDay()+"W");
-            case 8 -> simulationOut.setText(cronTemp.getSpecialInDay()+"#"+cronTemp.getSpecialInWeek());
+            case 8 -> simulationOut.setText(cronTemp.getOrderDay()+"#"+cronTemp.getOrderWeek());
         }
     }
 
@@ -1322,8 +1386,11 @@ public class CronCreate {
                 cronInfo.getHour() + " " +
                 cronInfo.getDay() + " " +
                 cronInfo.getMouth() + " " +
-                cronInfo.getWeek() + " "
-        );
+                cronInfo.getWeek());
+    }
+    //特殊码专属生成
+    private void specialCreate(String special){
+        createSimulation.setText(special);
     }
 
     public boolean check(){

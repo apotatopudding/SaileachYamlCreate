@@ -1,20 +1,40 @@
 package org.example;
 
+/**
+ * @author apotatopudding
+ * @date 2022/12/14 11:41
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CronTemp {
-
-    public List<Integer> appointList = new ArrayList<>();//只用于周的指定部分统计
     public Integer cycleMinRange;
     public Integer cycleMaxRange;
     public Integer fromMinRange;
     public Integer fromMaxRange;
-    public String appoint;
+    public String appoint = "?";
     public Integer LatestWorkDay;
-    public Integer specialInDay;
-    public Integer specialInWeek;
-    public Integer latestDay;
+    public Integer latestDay = 0;
+    public Integer OrderWeek;
+    public Integer OrderDay;
+    public List<Integer> weekAppointList = new ArrayList<>();//只用于周的指定部分统计
+
+    public Integer getOrderWeek() {
+        return OrderWeek;
+    }
+
+    public void setOrderWeek(Integer orderWeek) {
+        OrderWeek = orderWeek;
+    }
+
+    public Integer getOrderDay() {
+        return OrderDay;
+    }
+
+    public void setOrderDay(Integer orderDay) {
+        OrderDay = orderDay;
+    }
 
     public Integer getCycleMinRange() {
         return cycleMinRange;
@@ -64,27 +84,26 @@ public class CronTemp {
         LatestWorkDay = latestWorkDay;
     }
 
-    public Integer getSpecialInDay() {
-        return specialInDay;
-    }
-
-    public void setSpecialInDay(Integer specialInDay) {
-        this.specialInDay = specialInDay;
-    }
-
-    public Integer getSpecialInWeek() {
-        return specialInWeek;
-    }
-
-    public void setSpecialInWeek(Integer specialInWeek) {
-        this.specialInWeek = specialInWeek;
-    }
-
     public Integer getLatestDay() {
         return latestDay;
     }
 
     public void setLatestDay(Integer latestDay) {
         this.latestDay = latestDay;
+    }
+
+    private String weekChange(Integer num){
+        String s;
+        switch (num){
+            case 1-> s = "MON";
+            case 2-> s = "TUE";
+            case 3-> s = "WED";
+            case 4-> s = "THU";
+            case 5-> s = "FRI";
+            case 6-> s = "SAT";
+            case 7-> s = "SUN";
+            default -> s = "";
+        }
+        return s;
     }
 }

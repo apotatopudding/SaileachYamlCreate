@@ -1,6 +1,11 @@
 package org.example;
 
-import org.quartz.CronExpression;
+/**
+ * @author apotatopudding
+ * @date 2022/12/14 11:41
+ */
+
+import org.springframework.scheduling.support.CronExpression;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -8,9 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 
 public class YmlCreate {
@@ -320,7 +323,7 @@ public class YmlCreate {
         biliJob.setBounds(20, 20, 150, 20);
         JF.getContentPane().add(biliJob);
 
-        JTextField biliJobIn = new JTextField();
+        JTextField biliJobIn = new JTextField("0 */5 * * * ?");
         biliJobIn.setColumns(50);
         biliJobIn.setBounds(145, 20, 80, 20);
         JF.getContentPane().add(biliJobIn);
@@ -336,7 +339,7 @@ public class YmlCreate {
         birthdayJob.setBounds(20, 50, 150, 20);
         JF.getContentPane().add(birthdayJob);
 
-        JTextField birthdayJobIn = new JTextField();
+        JTextField birthdayJobIn = new JTextField("0 0 8 */1 * ?");
         birthdayJobIn.setColumns(50);
         birthdayJobIn.setBounds(145, 50, 80, 20);
         JF.getContentPane().add(birthdayJobIn);
@@ -352,7 +355,7 @@ public class YmlCreate {
         lookWorldJob.setBounds(20, 80, 150, 20);
         JF.getContentPane().add(lookWorldJob);
 
-        JTextField lookWorldJobIn = new JTextField();
+        JTextField lookWorldJobIn = new JTextField("0 30 7 */1 * ?");
         lookWorldJobIn.setColumns(50);
         lookWorldJobIn.setBounds(145, 80, 80, 20);
         JF.getContentPane().add(lookWorldJobIn);
@@ -360,13 +363,7 @@ public class YmlCreate {
         JButton lookWorldJobInsert = new JButton();
         lookWorldJobInsert.setText("置入");
         lookWorldJobInsert.setBounds(230,80,60,20);
-        lookWorldJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                lookWorldJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        lookWorldJobInsert.addActionListener(e -> lookWorldJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(lookWorldJobInsert);
 
         JLabel updateJob = new JLabel("数据更新监听:");
@@ -374,7 +371,7 @@ public class YmlCreate {
         updateJob.setBounds(20, 110, 150, 20);
         JF.getContentPane().add(updateJob);
 
-        JTextField updateJobIn = new JTextField();
+        JTextField updateJobIn = new JTextField("0 */10 * * * ?");
         updateJobIn.setColumns(50);
         updateJobIn.setBounds(145, 110, 80, 20);
         JF.getContentPane().add(updateJobIn);
@@ -382,13 +379,7 @@ public class YmlCreate {
         JButton updateJobInsert = new JButton();
         updateJobInsert.setText("置入");
         updateJobInsert.setBounds(230,110,60,20);
-        updateJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                updateJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        updateJobInsert.addActionListener(e -> updateJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(updateJobInsert);
 
         JLabel exterminateJob = new JLabel("剿灭提醒发送:");
@@ -396,7 +387,7 @@ public class YmlCreate {
         exterminateJob.setBounds(20, 140, 150, 20);
         JF.getContentPane().add(exterminateJob);
 
-        JTextField exterminateJobIn = new JTextField();
+        JTextField exterminateJobIn = new JTextField("0 0 17 ? * 7");
         exterminateJobIn.setColumns(50);
         exterminateJobIn.setBounds(145, 140, 80, 20);
         JF.getContentPane().add(exterminateJobIn);
@@ -404,13 +395,7 @@ public class YmlCreate {
         JButton exterminateJobInsert = new JButton();
         exterminateJobInsert.setText("置入");
         exterminateJobInsert.setBounds(230,140,60,20);
-        exterminateJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                exterminateJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        exterminateJobInsert.addActionListener(e -> exterminateJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(exterminateJobInsert);
 
         JLabel cleanJob = new JLabel("抽卡次数更新:");
@@ -418,7 +403,7 @@ public class YmlCreate {
         cleanJob.setBounds(20, 170, 150, 20);
         JF.getContentPane().add(cleanJob);
 
-        JTextField cleanJobIn = new JTextField();
+        JTextField cleanJobIn = new JTextField("0 0 4 */1 * ?");
         cleanJobIn.setColumns(50);
         cleanJobIn.setBounds(145, 170, 80, 20);
         JF.getContentPane().add(cleanJobIn);
@@ -426,13 +411,7 @@ public class YmlCreate {
         JButton cleanJobInsert = new JButton();
         cleanJobInsert.setText("置入");
         cleanJobInsert.setBounds(230,170,60,20);
-        cleanJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                cleanJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        cleanJobInsert.addActionListener(e -> cleanJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(cleanJobInsert);
 
         JLabel dayJob = new JLabel("每日任务定时:");
@@ -440,7 +419,7 @@ public class YmlCreate {
         dayJob.setBounds(20, 200, 150, 20);
         JF.getContentPane().add(dayJob);
 
-        JTextField dayJobIn = new JTextField();
+        JTextField dayJobIn = new JTextField("0 0 0 */1 * ?");
         dayJobIn.setColumns(50);
         dayJobIn.setBounds(145, 200, 80, 20);
         JF.getContentPane().add(dayJobIn);
@@ -448,13 +427,7 @@ public class YmlCreate {
         JButton dayJobInsert = new JButton();
         dayJobInsert.setText("置入");
         dayJobInsert.setBounds(230,200,60,20);
-        dayJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                dayJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        dayJobInsert.addActionListener(e -> dayJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(dayJobInsert);
 
         JLabel picJob = new JLabel("60秒看世界获取:");
@@ -462,7 +435,7 @@ public class YmlCreate {
         picJob.setBounds(20, 230, 150, 20);
         JF.getContentPane().add(picJob);
 
-        JTextField picJobIn = new JTextField();
+        JTextField picJobIn = new JTextField("0 0 1 */1 * ?");
         picJobIn.setColumns(50);
         picJobIn.setBounds(145, 230, 80, 20);
         JF.getContentPane().add(picJobIn);
@@ -470,13 +443,7 @@ public class YmlCreate {
         JButton picJobInsert = new JButton();
         picJobInsert.setText("置入");
         picJobInsert.setBounds(230,230,60,20);
-        picJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                picJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        picJobInsert.addActionListener(e -> picJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(picJobInsert);
 
         JLabel monthJob = new JLabel("每月任务刷新:");
@@ -484,7 +451,7 @@ public class YmlCreate {
         monthJob.setBounds(20, 260, 150, 20);
         JF.getContentPane().add(monthJob);
 
-        JTextField monthJobIn = new JTextField();
+        JTextField monthJobIn = new JTextField("0 0 0 1 * ?");
         monthJobIn.setColumns(50);
         monthJobIn.setBounds(145, 260, 80, 20);
         JF.getContentPane().add(monthJobIn);
@@ -492,13 +459,7 @@ public class YmlCreate {
         JButton monthJobInsert = new JButton();
         monthJobInsert.setText("置入");
         monthJobInsert.setBounds(230,260,60,20);
-        monthJobInsert.addActionListener(e -> {
-            if (cronCreate.check()){
-                monthJobIn.setText(cronCreate.createSimulation.getText());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        monthJobInsert.addActionListener(e -> monthJobIn.setText(cronCreate.createSimulation.getText()));
         JF.getContentPane().add(monthJobInsert);
 
         JLabel remind = new JLabel("cron生成器");
@@ -510,82 +471,113 @@ public class YmlCreate {
         JButton second = new JButton();
         second.setText("秒");
         second.setBounds(300,30,60,20);
-        second.addActionListener(e -> cronCreate.second());
+        second.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.second();
+        });
         JF.getContentPane().add(second);
 
         JButton minute = new JButton();
         minute.setText("分钟");
         minute.setBounds(370,30,60,20);
-        minute.addActionListener(e -> cronCreate.minute());
+        minute.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.minute();
+        });
         JF.getContentPane().add(minute);
 
         JButton hour = new JButton();
         hour.setText("小时");
         hour.setBounds(440,30,60,20);
-        hour.addActionListener(e -> cronCreate.hour());
+        hour.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.hour();
+        });
         JF.getContentPane().add(hour);
 
         JButton day = new JButton();
         day.setText("日");
         day.setBounds(300,60,60,20);
-        day.addActionListener(e -> cronCreate.day());
+        day.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.day();
+        });
         JF.getContentPane().add(day);
 
         JButton mouth = new JButton();
         mouth.setText("月");
         mouth.setBounds(370,60,60,20);
-        mouth.addActionListener(e -> cronCreate.mouth());
+        mouth.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.mouth();
+        });
         JF.getContentPane().add(mouth);
 
         JButton week = new JButton();
         week.setText("周");
         week.setBounds(440,60,60,20);
-        week.addActionListener(e -> cronCreate.week());
+        week.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.week();
+        });
         JF.getContentPane().add(week);
 
-        JLabel generate = new JLabel("生成：");
-        generate.setBounds(300,90,40,20);
+        JButton special = new JButton();
+        special.setText("特殊");
+        special.setBounds(440,5,60,20);
+        special.addActionListener(e -> {
+            cronCreate.childJF.setVisible(false);
+            cronCreate.childJF = new JFrame();
+            cronCreate.special();
+        });
+        JF.getContentPane().add(special);
+
+        JLabel generate = new JLabel("生成值为：");
+        generate.setBounds(300,90,100,20);
         JF.getContentPane().add(generate);
 
-        cronCreate.createSimulation.setBounds(340,90,90,20);
+        cronCreate.createSimulation.setBounds(300,115,200,20);
         JF.getContentPane().add(cronCreate.createSimulation);
 
         //模拟十次运行效果
         JLabel simulationRemind = new JLabel("连续十次的运行模拟结果为：");
         simulationRemind.setForeground(Color.red);
-        simulationRemind.setBounds(300,120,180,20);
+        simulationRemind.setBounds(300,140,180,20);
         JF.getContentPane().add(simulationRemind);
 
         JTextArea simulationText = new JTextArea();
-        simulationText.setBounds(300,140,180,165);
+        simulationText.setBounds(300,160,180,165);
         simulationText.setEditable(false);
         JF.getContentPane().add(simulationText);
 
         JButton simulation = new JButton("模拟");
-        simulation.setBounds(440,90,60,20);
+        simulation.setBounds(400,90,100,20);
         simulation.addActionListener(e -> {
-            if (cronCreate.check()){
-                StringBuilder text = new StringBuilder();
-                Date date = new Date();
-                for (int i = 0; i < 10; i++) {
-                    CronExpression cronExpression;
-                    try {
-                        cronExpression = new CronExpression(cronCreate.createSimulation.getText());
-                    } catch (ParseException p) {
-                        throw new RuntimeException(p);
-                    }
-                    Date newDate = cronExpression.getNextValidTimeAfter(date);
-                    if (null == newDate) {
-                        break;
-                    }
-                    text.append(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(newDate));
-                    text.append("\n");
-                    date = newDate;
+            StringBuilder text = new StringBuilder();
+            LocalDateTime time = LocalDateTime.now();
+            for (int i = 0; i < 10; i++) {
+                CronExpression cronExpression = CronExpression.parse(cronCreate.createSimulation.getText());
+                LocalDateTime nextTime = cronExpression.next(time);
+                if (nextTime == null) {
+                    break;
                 }
-                simulationText.setText(text.toString());
-            }else {
-                JOptionPane.showMessageDialog(null, "周与日不可同时指定或不指定","错误",JOptionPane.ERROR_MESSAGE);
+                String now;
+                if (nextTime.getSecond() == 0) {
+                    now = nextTime.toString().replace("T", "  ") + ":00";
+                } else {
+                    now = nextTime.toString().replace("T", "  ");
+                }
+                text.append(now);
+                text.append("\n");
+                time = nextTime;
             }
+            simulationText.setText(text.toString());
         });
         JF.getContentPane().add(simulation);
 

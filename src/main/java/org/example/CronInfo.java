@@ -1,5 +1,10 @@
 package org.example;
 
+/**
+ * @author apotatopudding
+ * @date 2022/12/14 11:41
+ */
+
 public class CronInfo {
     public String second = "*";
     public String minute = "*";

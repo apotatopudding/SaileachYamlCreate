@@ -1,5 +1,10 @@
 package org.example;
 
+/**
+ * @author apotatopudding
+ * @date 2022/12/14 11:41
+ */
+
 public class YmlInfo {
     String post = "3036";
     String botName = "";
