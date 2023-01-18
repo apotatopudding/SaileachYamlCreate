@@ -6,10 +6,11 @@ package org.example;
  */
 
 public class YmlInfo {
-    String post = "3036";
+    Integer post = 3036;
     String botName = "";
     String qqList = "";
     String pwList = "";
+    String typeList = "IPAD";
     String ownerQQ = "";
     String adminQQ = "";
     String testGroup = "";
@@ -31,11 +32,11 @@ public class YmlInfo {
     String APIToken = "";
 
 
-    public String getPost() {
+    public Integer getPost() {
         return post;
     }
 
-    public void setPost(String post) {
+    public void setPost(Integer post) {
         this.post = post;
     }
 
@@ -61,6 +62,14 @@ public class YmlInfo {
 
     public void setPwList(String pwList) {
         this.pwList = pwList;
+    }
+
+    public String getTypeList() {
+        return typeList;
+    }
+
+    public void setTypeList(String typeList) {
+        this.typeList = typeList;
     }
 
     public String getOwnerQQ() {

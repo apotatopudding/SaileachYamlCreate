@@ -11,6 +11,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class YmlCreate {
 
     JLabel show = new JLabel();{
         show.setText("端口号：8088");
-        show.setBounds(100, 200, 400, 400);
+        show.setBounds(100, 200, 400, 420);
     }
 
     Font font = new Font("宋体", Font.BOLD,15);
@@ -101,6 +102,15 @@ public class YmlCreate {
             API();
         });
 
+        //百度信息填写
+        JButton btn_Button_read = new JButton("读入");
+        btn_Button_read.setBounds(40, 120, 60, 23);
+        frame.getContentPane().add(btn_Button_read);
+        btn_Button_read.addActionListener(e -> {
+            frame.setVisible(false);
+            read();
+        });
+
         //生成YAML文件
         JButton btn_Button_create = new JButton("生成");
         Font postFont = new Font("宋体", Font.BOLD,25);
@@ -127,6 +137,57 @@ public class YmlCreate {
         frame.setVisible(true);
     }
 
+    private void read() {
+        Yaml yaml = new Yaml();
+        LinkedHashMap<String, LinkedHashMap<String, Object>> map;
+        try(FileInputStream inputStream = new FileInputStream("application.yml")) {
+            map = yaml.load(inputStream);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"未找到文件，读取失败","读取错误", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
+        }
+
+        LinkedHashMap<String, Object> server = map.get("server");
+        ymlInfo.setPost((Integer) server.get("port"));
+
+        LinkedHashMap<String, Object> userConfig = map.get("userConfig");
+        ymlInfo.setBotName((String) userConfig.get("botNames"));
+        ymlInfo.setQqList((String) userConfig.get("qqList"));
+        ymlInfo.setPwList((String) userConfig.get("pwList"));
+        ymlInfo.setTypeList((String) userConfig.get("typeList"));
+        ymlInfo.setOwnerQQ((String) userConfig.get("ownerQQ"));
+        ymlInfo.setAdminQQ((String) userConfig.get("adminQQ"));
+        ymlInfo.setTestGroup((String) userConfig.get("testGroup"));
+
+        LinkedHashMap<String, Object> scheduled = map.get("scheduled");
+        ymlInfo.setBiliJob((String) scheduled.get("biliJob"));
+        ymlInfo.setBirthdayJob((String) scheduled.get("birthdayJob"));
+        ymlInfo.setLookWorldJob((String) scheduled.get("lookWorldJob"));
+        ymlInfo.setUpdateJob((String) scheduled.get("updateJob"));
+        ymlInfo.setExterminateJob((String) scheduled.get("exterminateJob"));
+        ymlInfo.setCleanJob((String) scheduled.get("cleanJob"));
+        ymlInfo.setDayJob((String) scheduled.get("dayJob"));
+        ymlInfo.setPicJob((String) scheduled.get("picJob"));
+        ymlInfo.setMonthJob((String) scheduled.get("monthJob"));
+
+        LinkedHashMap<String, Object> baiduIdentifyConfig = map.get("baiduIdentifyConfig");
+        ymlInfo.setIdentifyAPP_ID((String) baiduIdentifyConfig.get("APP_ID"));
+        ymlInfo.setIdentifyAPI_KEY((String) baiduIdentifyConfig.get("API_KEY"));
+        ymlInfo.setIdentifySECRET_KEY((String) baiduIdentifyConfig.get("SECRET_KEY"));
+
+        LinkedHashMap<String,Object> baiduAuditConfig = map.get("baiduAuditConfig");
+        ymlInfo.setAuditAPP_ID((String) baiduAuditConfig.get("APP_ID"));
+        ymlInfo.setAuditAPI_KEY((String) baiduAuditConfig.get("API_KEY"));
+        ymlInfo.setAuditSECRET_KEY((String) baiduAuditConfig.get("SECRET_KEY"));
+
+        LinkedHashMap<String,Object> APIConfig = map.get("APIConfig");
+        ymlInfo.setAPIToken((String) APIConfig.get("token"));
+
+        JOptionPane.showMessageDialog(null,"读入成功");
+        update();
+        frame.setVisible(true);
+    }
+
     private void post(){
         JFrame JF = new JFrame("端口填写");
         JF.setBounds(100, 100, 250, 140);
@@ -147,10 +208,15 @@ public class YmlCreate {
         JButton btn_Button_pass = new JButton("确认");
         btn_Button_pass.setBounds(40, 55, 70, 20);
         btn_Button_pass.addActionListener(e1 -> {
-            ymlInfo.setPost(postID.getText());
-            update();
             JF.setVisible(false);
-            frame.setVisible(true);
+            if (postID.getText().matches("[0-9]+")){
+                ymlInfo.setPost(Integer.valueOf(postID.getText()));
+                update();
+                frame.setVisible(true);
+            }else {
+                JOptionPane.showMessageDialog(null,"端口号必须为纯数字","输入错误",JOptionPane.ERROR_MESSAGE);
+                JF.setVisible(true);
+            }
         });
         JF.getContentPane().add(btn_Button_pass);
 
@@ -167,7 +233,7 @@ public class YmlCreate {
 
     private void userConfig(){
         JFrame JF = new JFrame("bot配置填写");
-        JF.setBounds(100, 100, 280, 230);
+        JF.setBounds(100, 100, 280, 260);
         JF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JF.setResizable(false);
         JF.getContentPane().setLayout(null);
@@ -198,6 +264,7 @@ public class YmlCreate {
         qqListIn.setColumns(50);
         qqListIn.setBounds(100, 70, 138, 20);
         JF.getContentPane().add(qqListIn);
+
         //bot登录密码填写
         JLabel pwList = new JLabel("密码:");
         pwList.setFont(font);
@@ -209,13 +276,30 @@ public class YmlCreate {
         pwListIn.setBounds(100, 100, 138, 20);
         JF.getContentPane().add(pwListIn);
 
+        //bot登录协议填写
+        JLabel typeList = new JLabel("登录协议:");
+        typeList.setFont(font);
+        typeList.setBounds(20, 130, 100, 20);
+        JF.getContentPane().add(typeList);
+
+        JComboBox<String> typeListIn = new JComboBox<>(){{
+                addItem("IPAD");
+                addItem("ANDROID_PAD");
+                addItem("ANDROID_PHONE");
+                addItem("ANDROID_WATCH");
+                addItem("MACOS");
+        }};
+        typeListIn.setBounds(100, 130, 138, 20);
+        JF.getContentPane().add(typeListIn);
+
         //确认返回按钮
         JButton btn_Button_pass = new JButton("确认");
-        btn_Button_pass.setBounds(50, 140, 70, 23);
-        btn_Button_pass.addActionListener(e1 -> {
+        btn_Button_pass.setBounds(50, 170, 70, 23);
+        btn_Button_pass.addActionListener(e -> {
             ymlInfo.setBotName(botNameIn.getText());
             ymlInfo.setQqList(qqListIn.getText());
             ymlInfo.setPwList(pwListIn.getText());
+            ymlInfo.setTypeList((String) typeListIn.getSelectedItem());
             update();
             JF.setVisible(false);
             frame.setVisible(true);
@@ -223,8 +307,8 @@ public class YmlCreate {
         JF.getContentPane().add(btn_Button_pass);
 
         JButton btn_Button_back = new JButton("返回");
-        btn_Button_back.setBounds(150, 140, 70, 23);
-        btn_Button_back.addActionListener(e1 -> {
+        btn_Button_back.setBounds(150, 170, 70, 23);
+        btn_Button_back.addActionListener(e -> {
             JF.setVisible(false);
             frame.setVisible(true);
         });
@@ -795,6 +879,7 @@ public class YmlCreate {
                 "bot名字："+ymlInfo.getBotName()+"<br/>" +
                 "QQ号："+ymlInfo.getQqList()+"<br/>" +
                 "密码："+ymlInfo.getPwList()+"<br/>" +
+                "登录协议："+ymlInfo.getTypeList()+"<br/>" +
                 "号主账号："+ymlInfo.getOwnerQQ()+"<br/>" +
                 "管理账号："+ymlInfo.getAdminQQ()+"<br/>" +
                 "测试群号："+ymlInfo.getTestGroup()+"<br/>" +
@@ -842,6 +927,7 @@ public class YmlCreate {
         userConfig.put("botNames",ymlInfo.getBotName());
         userConfig.put("qqList",ymlInfo.getQqList());
         userConfig.put("pwList",ymlInfo.getPwList());
+        userConfig.put("typeList",ymlInfo.getTypeList());
         userConfig.put("ownerQQ",ymlInfo.getOwnerQQ());
         userConfig.put("adminQQ",ymlInfo.getAdminQQ());
         userConfig.put("testGroup",ymlInfo.getTestGroup());

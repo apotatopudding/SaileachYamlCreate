@@ -1362,21 +1362,21 @@ public class CronCreate {
         }else {
             state = i;
         }
-        switch (i){
+        switch (i) {
             case 1 -> simulationOut.setText("*");
-            case 2 -> simulationOut.setText(cronTemp.getCycleMinRange()+"-"+cronTemp.getCycleMaxRange());
-            case 3 -> simulationOut.setText(cronTemp.getFromMinRange()+"/"+cronTemp.getFromMaxRange());
+            case 2 -> simulationOut.setText(cronTemp.getCycleMinRange() + "-" + cronTemp.getCycleMaxRange());
+            case 3 -> simulationOut.setText(cronTemp.getFromMinRange() + "/" + cronTemp.getFromMaxRange());
             case 4 -> simulationOut.setText(cronTemp.getAppoint());
             case 5 -> simulationOut.setText("?");
             case 6 -> {
-                if (cronTemp.getLatestDay() == 0){
+                if (cronTemp.getLatestDay() == 0) {
                     simulationOut.setText("L");
-                }else {
-                    simulationOut.setText(cronTemp.getLatestDay()+"L");
+                } else {
+                    simulationOut.setText(cronTemp.getLatestDay() + "L");
                 }
             }
-            case 7 -> simulationOut.setText(cronTemp.getLatestWorkDay()+"W");
-            case 8 -> simulationOut.setText(cronTemp.getOrderDay()+"#"+cronTemp.getOrderWeek());
+            case 7 -> simulationOut.setText(cronTemp.getLatestWorkDay() + "W");
+            case 8 -> simulationOut.setText(cronTemp.getOrderDay() + "#" + cronTemp.getOrderWeek());
         }
     }
 

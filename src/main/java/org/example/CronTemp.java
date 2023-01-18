@@ -93,17 +93,15 @@ public class CronTemp {
     }
 
     private String weekChange(Integer num){
-        String s;
-        switch (num){
-            case 1-> s = "MON";
-            case 2-> s = "TUE";
-            case 3-> s = "WED";
-            case 4-> s = "THU";
-            case 5-> s = "FRI";
-            case 6-> s = "SAT";
-            case 7-> s = "SUN";
-            default -> s = "";
-        }
-        return s;
+        return switch (num) {
+            case 1 -> "MON";
+            case 2 -> "TUE";
+            case 3 -> "WED";
+            case 4 -> "THU";
+            case 5 -> "FRI";
+            case 6 -> "SAT";
+            case 7 -> "SUN";
+            default -> "";
+        };
     }
 }
