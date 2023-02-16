@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 public class YmlCreate {
 
@@ -134,57 +135,6 @@ public class YmlCreate {
         update();
         frame.getContentPane().add(show);
 
-        frame.setVisible(true);
-    }
-
-    private void read() {
-        Yaml yaml = new Yaml();
-        LinkedHashMap<String, LinkedHashMap<String, Object>> map;
-        try(FileInputStream inputStream = new FileInputStream("application.yml")) {
-            map = yaml.load(inputStream);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,"未找到文件，读取失败","读取错误", JOptionPane.ERROR_MESSAGE);
-            throw new RuntimeException(e);
-        }
-
-        LinkedHashMap<String, Object> server = map.get("server");
-        ymlInfo.setPost((Integer) server.get("port"));
-
-        LinkedHashMap<String, Object> userConfig = map.get("userConfig");
-        ymlInfo.setBotName((String) userConfig.get("botNames"));
-        ymlInfo.setQqList((String) userConfig.get("qqList"));
-        ymlInfo.setPwList((String) userConfig.get("pwList"));
-        ymlInfo.setTypeList((String) userConfig.get("typeList"));
-        ymlInfo.setOwnerQQ((String) userConfig.get("ownerQQ"));
-        ymlInfo.setAdminQQ((String) userConfig.get("adminQQ"));
-        ymlInfo.setTestGroup((String) userConfig.get("testGroup"));
-
-        LinkedHashMap<String, Object> scheduled = map.get("scheduled");
-        ymlInfo.setBiliJob((String) scheduled.get("biliJob"));
-        ymlInfo.setBirthdayJob((String) scheduled.get("birthdayJob"));
-        ymlInfo.setLookWorldJob((String) scheduled.get("lookWorldJob"));
-        ymlInfo.setUpdateJob((String) scheduled.get("updateJob"));
-        ymlInfo.setExterminateJob((String) scheduled.get("exterminateJob"));
-        ymlInfo.setCleanJob((String) scheduled.get("cleanJob"));
-        ymlInfo.setDayJob((String) scheduled.get("dayJob"));
-        ymlInfo.setPicJob((String) scheduled.get("picJob"));
-        ymlInfo.setMonthJob((String) scheduled.get("monthJob"));
-
-        LinkedHashMap<String, Object> baiduIdentifyConfig = map.get("baiduIdentifyConfig");
-        ymlInfo.setIdentifyAPP_ID((String) baiduIdentifyConfig.get("APP_ID"));
-        ymlInfo.setIdentifyAPI_KEY((String) baiduIdentifyConfig.get("API_KEY"));
-        ymlInfo.setIdentifySECRET_KEY((String) baiduIdentifyConfig.get("SECRET_KEY"));
-
-        LinkedHashMap<String,Object> baiduAuditConfig = map.get("baiduAuditConfig");
-        ymlInfo.setAuditAPP_ID((String) baiduAuditConfig.get("APP_ID"));
-        ymlInfo.setAuditAPI_KEY((String) baiduAuditConfig.get("API_KEY"));
-        ymlInfo.setAuditSECRET_KEY((String) baiduAuditConfig.get("SECRET_KEY"));
-
-        LinkedHashMap<String,Object> APIConfig = map.get("APIConfig");
-        ymlInfo.setAPIToken((String) APIConfig.get("token"));
-
-        JOptionPane.showMessageDialog(null,"读入成功");
-        update();
         frame.setVisible(true);
     }
 
@@ -903,6 +853,124 @@ public class YmlCreate {
                 "API token："+ymlInfo.getAPIToken()+"<br/>" +
                 "</html>";
         show.setText(text);
+    }
+
+    private void read() {
+        Yaml yaml = new Yaml();
+        LinkedHashMap<String, LinkedHashMap<String, Object>> linkedHashMap;
+        try(FileInputStream inputStream = new FileInputStream("application.yml")) {
+            linkedHashMap = yaml.load(inputStream);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"未找到文件，读取失败","读取错误", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
+        }
+
+        LinkedHashMap<String, Object> server = linkedHashMap.get("server");
+        Object port = server.get("port");
+        Integer integer = objectToInteger("port",port);
+        ymlInfo.setPost(Objects.requireNonNullElse(integer, 3036));
+
+        LinkedHashMap<String, Object> userConfig = linkedHashMap.get("userConfig");
+        for (String key : userConfig.keySet()) {
+            switch (key){
+                case "botNames"-> ymlInfo.setBotName(objectToString(key,userConfig.get(key)));
+                case "qqList"-> ymlInfo.setQqList(objectToString(key,userConfig.get(key)));
+                case "pwList"-> ymlInfo.setPwList(objectToString(key,userConfig.get(key)));
+                case "typeList"-> {
+                    String s = objectToString(key,userConfig.get(key));
+                    if (s.equals(""))
+                        ymlInfo.setTypeList("IPAD");
+                    else
+                        ymlInfo.setTypeList(s);
+                }
+                case "ownerQQ"-> ymlInfo.setOwnerQQ(objectToString(key,userConfig.get(key)));
+                case "adminQQ"-> ymlInfo.setAdminQQ(objectToString(key,userConfig.get(key)));
+                case "testGroup"-> ymlInfo.setTestGroup(objectToString(key,userConfig.get(key)));
+            }
+        }
+
+        LinkedHashMap<String, Object> scheduled = linkedHashMap.get("scheduled");
+        for (String key : scheduled.keySet()) {
+            switch (key) {
+                case "biliJob" -> ymlInfo.setBiliJob(objectToString(key, scheduled.get(key)));
+                case "birthdayJob" -> ymlInfo.setBirthdayJob(objectToString(key, scheduled.get(key)));
+                case "lookWorldJob" -> ymlInfo.setLookWorldJob(objectToString(key, scheduled.get(key)));
+                case "updateJob" -> ymlInfo.setUpdateJob(objectToString(key, scheduled.get(key)));
+                case "exterminateJob" -> ymlInfo.setExterminateJob(objectToString(key, scheduled.get(key)));
+                case "cleanJob" -> ymlInfo.setCleanJob(objectToString(key, scheduled.get(key)));
+                case "dayJob" -> ymlInfo.setDayJob(objectToString(key, scheduled.get(key)));
+                case "picJob" -> ymlInfo.setPicJob(objectToString(key, scheduled.get(key)));
+                case "monthJob" -> ymlInfo.setMonthJob(objectToString(key, scheduled.get(key)));
+            }
+        }
+
+        LinkedHashMap<String, Object> baiduIdentifyConfig = linkedHashMap.get("baiduIdentifyConfig");
+        for (String key : baiduIdentifyConfig.keySet()) {
+            switch (key) {
+                case "APP_ID" -> ymlInfo.setIdentifyAPP_ID(objectToString(key, baiduIdentifyConfig.get(key)));
+                case "API_KEY" -> ymlInfo.setIdentifyAPI_KEY(objectToString(key, baiduIdentifyConfig.get(key)));
+                case "SECRET_KEY" -> ymlInfo.setIdentifySECRET_KEY(objectToString(key, baiduIdentifyConfig.get(key)));
+            }
+        }
+
+        LinkedHashMap<String,Object> baiduAuditConfig = linkedHashMap.get("baiduAuditConfig");
+        for (String key : baiduAuditConfig.keySet()) {
+            switch (key) {
+                case "APP_ID" -> ymlInfo.setAuditAPP_ID(objectToString(key, baiduAuditConfig.get(key)));
+                case "API_KEY" -> ymlInfo.setAuditAPI_KEY(objectToString(key, baiduAuditConfig.get(key)));
+                case "SECRET_KEY" -> ymlInfo.setAuditSECRET_KEY(objectToString(key, baiduAuditConfig.get(key)));
+            }
+        }
+
+        LinkedHashMap<String,Object> APIConfig = linkedHashMap.get("APIConfig");
+        ymlInfo.setAPIToken(objectToString("token",APIConfig.get("token")));
+
+        JOptionPane.showMessageDialog(null,"读入成功");
+        update();
+        frame.setVisible(true);
+    }
+
+    /**
+     * Integer格式获取和转换，无法转换单独给出来然后直接弹掉
+     * @param key 进行转换的部分的信息
+     * @param o 需要获取和转换的Object
+     * @return Integer格式的内容
+     */
+    private Integer objectToInteger(String key,Object o){
+        if (o instanceof Integer ){
+            return (Integer) o;
+        }else if (o instanceof String) {
+            try {
+                return Integer.valueOf((String) o);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, key + "部分存在字符串无法转换为数字，跳过读取", "读取错误", JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
+        }else if (o == null){
+            return null;
+        }else {
+            JOptionPane.showMessageDialog(null,key+"部分存在无法转换格式\n实际格式为"+ o.getClass().getTypeName() +"\n跳过读取","读取错误", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+    }
+
+    /**
+     * String格式获取和转换，无法转换单独给出来然后直接弹掉
+     * @param key 进行转换的部分的信息
+     * @param o 需要获取和转换的Object
+     * @return String格式的内容
+     */
+    private String objectToString(String key,Object o){
+        if (o instanceof String){
+            return (String) o;
+        }else if (o instanceof Integer || o instanceof Long){
+            return String.valueOf(o);
+        }else if (o == null){
+            return "";
+        }else{
+            JOptionPane.showMessageDialog(null,key+"部分存在无法转换格式\n实际格式为"+ o.getClass().getTypeName() +"\n跳过读取","读取错误", JOptionPane.WARNING_MESSAGE);
+            return "";
+        }
     }
 
     private void finish() throws IOException {

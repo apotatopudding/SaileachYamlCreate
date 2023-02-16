@@ -6,12 +6,12 @@
 
     <groupId>org.example</groupId>
     <artifactId>yamlCreate</artifactId>
-    <version>1.2</version>
+    <version>1.4</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.0</version>
+        <version>3.0.2</version>
     </parent>
 
     <properties>
@@ -23,16 +23,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>2.4.0</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.29</version>
+            <version>1.33</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -53,10 +49,40 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <!-- get all project dependencies -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!-- MainClass in mainfest make a executable jar -->
+                    <archive>
+                        <manifest>
+                            <!--更改为自己的主函数启动类-->
+                            <mainClass>org.example.YmlCreate</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
